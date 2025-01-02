@@ -10,7 +10,7 @@ router.get("/all", async (req, res) => {
     try {
         await addLog({ id: logId, module: "角色模块", type: '获取所有角色', username: req.auth.username, req })
 
-        const sqlStr = "select id, fullname, remark, permissions from vue_role where is_delete = 0 and status = 0"
+        const sqlStr = "select id, fullname from vue_role where is_delete = 0 and status = 0"
         const [data] = await sql.query(sqlStr);
         addSuccessResult({ id: logId })
         res.send({ code: 200, data, message: "success" });

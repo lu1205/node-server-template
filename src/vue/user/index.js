@@ -115,7 +115,8 @@ router.get("/userPermission", async (req, res) => {
             if (!userRoleArr.length) {
                 // 无角色权限
                 addErrorResult({ id: logId, result: '无角色权限' })
-                return res.send({ code: 500, data: null, message: "无角色权限，请联系管理员配置权限" });
+                // return res.send({ code: 500, data: null, message: "无角色权限，请联系管理员配置权限" });
+                return res.send({ code: 200, data: [], message: "success" });
             }
 
             // 2. 通过 角色ID 查询 菜单权限ID
@@ -129,7 +130,8 @@ router.get("/userPermission", async (req, res) => {
             if (!permissions.length) {
                 // 无菜单权限
                 addErrorResult({ id: logId, result: '无菜单权限' })
-                return res.send({ code: 500, data: null, message: "无菜单权限，请联系管理员配置权限" });
+                // return res.send({ code: 500, data: null, message: "无菜单权限，请联系管理员配置权限" });
+                return res.send({ code: 200, data: [], message: "success" });
             }
             // 3. 通过菜单ID, 查询用户菜单
             sqlStr = `select id, pid, fullname, path, icon, component, type, status, keep_alive from vue_menu where is_delete = 0 and id in (${permissions})`
@@ -395,6 +397,42 @@ router.post("/batchDelete", async (req, res) => {
         if (data.affectedRows !== 0) {
             addSuccessResult({ id: logId })
             res.send({ code: 200, data: null, message: "success" });
+        } else {
+            addErrorResult({ id: logId, result: "操作失败" })
+            res.send({ code: 500, data: null, message: "fail" });
+        }
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+});
+
+// 查询用户角色
+router.get("/getRoles", async (req, res) => {
+    const logId = nanoid()
+    try {
+        const auth = req.auth
+        await addLog({ id: logId, module: "用户模块", type: '查询用户角色', username: auth.username, req })
+
+        const { query: { id } } = req
+
+        // 查询是否为 超级管理员
+        let [adminData] = await sql.query(
+            "select id, is_admin from vue_user where id = ? and is_delete = 0 and is_admin = 1",
+            [id]
+        );
+        if (adminData.length) {
+            addErrorResult({ id: logId, result: "无权限" })
+            return res.send({ code: 500, data: null, message: "无权限" });
+        }
+
+        const [data] = await sql.query(
+            "select id,roles from vue_user where id = ? and is_delete = 0",
+            [id]
+        );
+
+        if (data.length !== 0) {
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: data[0], message: "success" });
         } else {
             addErrorResult({ id: logId, result: "操作失败" })
             res.send({ code: 500, data: null, message: "fail" });
