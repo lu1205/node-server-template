@@ -40,7 +40,7 @@ export const addLog = async (data) => {
     try {
       const { id, result = '操作失败' } = data
       const updateDate = dayjs().format("YYYY-MM-DD HH:mm:ss:SSS")
-      await sql.query("update vue_logs set result = ?, update_time = ?, result_type = 0 where id = ?", [result, updateDate, id])
+      await sql.query("update vue_logs set result = ?, update_time = ?, result_type = 0 where uuid = ?", [result, updateDate, id])
     } catch (e) {
       console.log(e);
     }

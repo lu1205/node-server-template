@@ -47,7 +47,7 @@ router.get("/logout", async (req, res) => {
     const logId = nanoid()
     try {
         const auth = req.auth
-        
+
         loginUserList.delete(auth.id)
         await addLog({ id: logId, module: "用户模块", type: '退出登录', username: auth.username, req })
 
@@ -111,22 +111,28 @@ router.get("/userPermission", async (req, res) => {
                 addResult({ id: logId, result: '未登录' })
                 return res.send({ code: 500, data: null, message: "fail" });
             }
-            const userRoleArr = jwtInfo.rules?.split(',')
+            const userRoleArr = jwtInfo.roles?.split(',') || []
             if (!userRoleArr.length) {
                 // 无角色权限
-                addErrorResult({ id: logId, result: '角色权限' })
-                return res.send({ code: 500, data: null, message: "fail" });
+                addErrorResult({ id: logId, result: '无角色权限' })
+                return res.send({ code: 500, data: null, message: "无角色权限，请联系管理员配置权限" });
             }
 
             // 2. 通过 角色ID 查询 菜单权限ID
             const [permissionData] = await sql.query('select permissions from vue_role where id in (?)', [userRoleArr])
-            if (!permissionData.length) {
+            let permissions = []
+            permissionData?.forEach((v) => {
+                if(v.permissions) {
+                    permissions.push(...v.permissions.split(','))
+                }
+            })
+            if (!permissions.length) {
                 // 无菜单权限
                 addErrorResult({ id: logId, result: '无菜单权限' })
-                return res.send({ code: 500, data: null, message: "fail" });
+                return res.send({ code: 500, data: null, message: "无菜单权限，请联系管理员配置权限" });
             }
             // 3. 通过菜单ID, 查询用户菜单
-            sqlStr = `select id, pid, fullname, path, icon, component, type, status, keep_alive from vue_menu where is_delete = 0 and id in (${permissionData})`
+            sqlStr = `select id, pid, fullname, path, icon, component, type, status, keep_alive from vue_menu where is_delete = 0 and id in (${permissions})`
         }
 
         const [data] = await sql.query(sqlStr);
