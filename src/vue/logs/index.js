@@ -10,11 +10,11 @@ router.post("/list", async (req, res) => {
     const { query: { pageNum, pageSize }, body: { module } } = req
 
     let totalSql = `select count(id) as total from vue_logs where username = ${auth.username}`
-    let sqlStr = `select uuid, module, type, username, method, path, query, params, body, result_type, result, create_time, update_time from vue_logs where username = ${auth.username}`
+    let sqlStr = `select ip, uuid, module, type, username, method, path, query, params, body, result_type, result, browser, os, create_time, update_time from vue_logs where username = ${auth.username}`
 
     if (Number(auth['is_admin']) === 1) {
         totalSql = 'select count(id) as total from vue_logs where 1 = 1'
-        sqlStr = "select uuid, module, type, username, method, path, query, params, body, result_type, result, create_time, update_time from vue_logs where 1 = 1"
+        sqlStr = "select ip, uuid, module, type, username, method, path, query, params, body, result_type, result, browser, os, create_time, update_time from vue_logs where 1 = 1"
     }
 
     if (module) {
@@ -22,7 +22,7 @@ router.post("/list", async (req, res) => {
         sqlStr += ` and module like '%${module}%'`
     }
 
-    sqlStr += ` order by create_time desc limit ${(pageNum * 1 - 1) * pageSize},${ pageSize * 1}`
+    sqlStr += ` order by create_time desc limit ${(pageNum * 1 - 1) * pageSize},${pageSize * 1}`
 
     const [totalData] = await sql.query(totalSql);
 
@@ -49,7 +49,7 @@ router.get("/detail", async (req, res) => {
     const { query: { uuid } } = req
 
     const [data] = await sql.query(
-        "select uuid, module, type, username, method, path, query, params, body, result_type, result, create_time, update_time from vue_logs where uuid = ?",
+        "select ip, uuid, module, type, username, method, path, query, params, body, result_type, result, browser, os, create_time, update_time from vue_logs where uuid = ?",
         [uuid]
     );
 

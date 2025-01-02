@@ -1,5 +1,9 @@
 import express from "express";
+import useragent from 'express-useragent'
 const app = express();
+
+// 配置 useragent 中间件
+app.use(useragent.express())
 
 // 配置解析JSON数据的中间件
 app.use(express.json());

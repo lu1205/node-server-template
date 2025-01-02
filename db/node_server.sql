@@ -11,7 +11,7 @@
  Target Server Version : 80032 (8.0.32)
  File Encoding         : 65001
 
- Date: 02/01/2025 10:21:49
+ Date: 02/01/2025 15:26:33
 */
 
 SET NAMES utf8mb4;
@@ -70,6 +70,7 @@ DROP TABLE IF EXISTS `vue_logs`;
 CREATE TABLE `vue_logs`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `ip` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
   `module` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `type` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '操作类型',
   `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '操作人',
@@ -82,15 +83,17 @@ CREATE TABLE `vue_logs`  (
   `result` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT '操作结果',
   `create_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `update_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `browser` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `os` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 910 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1196 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of vue_logs
 -- ----------------------------
-INSERT INTO `vue_logs` VALUES (907, 'dfpbfUK2kdGa2oL56lirU', '用户模块', '登录', 'admin', 'POST', '/vue/user/login', '{}', '{}', '{\"username\":\"admin\",\"password\":\"123456\"}', 1, '', '2025-01-02 10:21:14:159', '2025-01-02 10:21:14:174');
-INSERT INTO `vue_logs` VALUES (908, '-KbraCtMs5nLE7vJCf7cZ', '用户模块', '登录用户信息', 'admin', 'GET', '/vue/user/userInfo', '{}', '{}', '{}', 1, '', '2025-01-02 10:21:14:191', '2025-01-02 10:21:14:194');
-INSERT INTO `vue_logs` VALUES (909, '5iHxqcmAUP5G9y_cA_RVn', '用户模块', '查询登录用户权限', 'admin', 'GET', '/vue/user/userPermission', '{}', '{}', '{}', 1, '', '2025-01-02 10:21:14:207', '2025-01-02 10:21:14:214');
+INSERT INTO `vue_logs` VALUES (1193, '3w6CYEHmL8drtHhUXWPd1', '127.0.0.1', '用户模块', '登录', 'admin', 'POST', '/vue/user/login', '{}', '{}', '{\"username\":\"admin\",\"password\":\"123456\"}', 1, '', '2025-01-02 15:26:15:834', '2025-01-02 15:26:15:847', 'Chrome 131.0.0.0', 'Windows 10.0');
+INSERT INTO `vue_logs` VALUES (1194, 'MPPyIKZXuE3hIgM6vDuqx', '127.0.0.1', '用户模块', '登录用户信息', 'admin', 'GET', '/vue/user/userInfo', '{}', '{}', '{}', 1, '', '2025-01-02 15:26:15:855', '2025-01-02 15:26:15:858', 'Chrome 131.0.0.0', 'Windows 10.0');
+INSERT INTO `vue_logs` VALUES (1195, '6w8EdLwE632nfRHWAyrO2', '127.0.0.1', '用户模块', '查询登录用户权限', 'admin', 'GET', '/vue/user/userPermission', '{}', '{}', '{}', 1, '', '2025-01-02 15:26:15:869', '2025-01-02 15:26:15:872', 'Chrome 131.0.0.0', 'Windows 10.0');
 
 -- ----------------------------
 -- Table structure for vue_menu
@@ -183,10 +186,10 @@ CREATE TABLE `vue_user`  (
 -- Records of vue_user
 -- ----------------------------
 INSERT INTO `vue_user` VALUES (1, '超级管理员', 'admin', '123456', '111@qq.com', NULL, '', 0, '1', 0);
-INSERT INTO `vue_user` VALUES (2, 'test1', 'test1', '123456', 'test1@qq.com', 'test1', '1', 0, '0', 0);
+INSERT INTO `vue_user` VALUES (2, 'test1', 'test1', '123456', 'test1@qq.com', 'test1', '1,3', 0, '0', 0);
 INSERT INTO `vue_user` VALUES (3, 'test2', 'test2', '123456', '123456@qq.com', '123456', '11', 0, '0', 0);
-INSERT INTO `vue_user` VALUES (4, 'test3', 'test3', '123456', '1', '2', NULL, 0, '0', 0);
-INSERT INTO `vue_user` VALUES (5, 'test4', 'test4', '123456', '1', '3', NULL, 0, '0', 0);
+INSERT INTO `vue_user` VALUES (4, 'test3', 'test3', '123456', '1', '2', '', 0, '0', 0);
+INSERT INTO `vue_user` VALUES (5, 'test4', 'test4', '123456', '1', '3', '', 0, '0', 0);
 INSERT INTO `vue_user` VALUES (6, 'test5', 'test5', '123456', '122223@qq.com', 'test5', NULL, 0, '0', 0);
 INSERT INTO `vue_user` VALUES (7, 'test6', 'test6', '123456', '', '', NULL, 0, '0', 0);
 INSERT INTO `vue_user` VALUES (8, 'test7', 'test7', '123456', '', '', NULL, 0, '0', 0);
