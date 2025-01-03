@@ -1,6 +1,0 @@
-db:
-  user: root
-  password: "Bingtanghulu"
-  host: localhost
-  port: 3306
-  database: node_server
