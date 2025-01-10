@@ -1,5 +1,5 @@
 const path = require("path");
-const prodConfig = require('./src/build/prod')
+const prodConfig = require('./src/buildConf/prod')
 
 module.exports = {
   target: "node", // 指定构建的目标是 Node.js
