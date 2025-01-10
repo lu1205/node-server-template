@@ -1,6 +1,5 @@
 const path = require("path");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const prodConfig = require('./src/build/prod')
 
 module.exports = {
   target: "node", // 指定构建的目标是 Node.js
@@ -13,7 +12,5 @@ module.exports = {
     filename: "[name].js", // 指定输出的文件名
     clean: true, // 每次构建之前清空输出目录
   },
-  plugins: [
-    // new BundleAnalyzerPlugin()
-  ],
+  ...prodConfig
 };
