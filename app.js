@@ -11,9 +11,12 @@ app.use(express.json());
 // 配置解析 token 的中间件  -- 在路由之前
 import { expressjwt } from "express-jwt";
 import config from "./config.js";
+
+// jwt 白名单
+const JWT_PATH_WHITE = ['/vue/user/login','/react/user/login','/react/user/getCaptcha']
 app.use(
   expressjwt({ secret: config.secretKey, algorithms: ["HS256"] }).unless({
-    path: [/^\/(vue|react)\/user\/(login)/],
+    path: JWT_PATH_WHITE,
   })
 );
 

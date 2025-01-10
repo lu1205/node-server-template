@@ -1,30 +1,158 @@
 import express from "express";
 import sql from "../../../db/index.js";
-import { decodeJWT } from "../../../utils/index.js";
-// 导入jwt
-import jwt from "jsonwebtoken";
-// 导入 加密盐
-import config from "../../../config.js";
-
 const router = express.Router();
+import { nanoid } from "nanoid";
+import { addLog, addSuccessResult, addErrorResult } from "../../../utils/reactLogUtil.js";
 
-// 登录
-router.post("/login", async (req, res) => {
-    const { body: { username, password } } = req
-    const [data] = await sql.query(
-        "select id from react_user where username = ? and password = ? and is_delete = 0",
-        [username, password]
-    );
-    if (data.length === 0) {
-        res.send({ code: 500, data: null, message: "用户名或密码错误" });
-        return;
+// 菜单列表
+router.get("/list", async (req, res) => {
+    const logId = nanoid()
+    try {
+        await addLog({ id: logId, module: "菜单模块", type: '获取菜单列表', username: req.auth.username, req })
+
+        const sqlStr = "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code from react_menu where is_delete = 0"
+
+        const [data] = await sql.query(sqlStr);
+
+        const list = data?.map(v => {
+            v.keepAlive = v.keep_alive
+            v.permissionCode = v.permission_code
+            delete v.keep_alive
+            delete v.permission_code
+            return v
+        }).sort((a, b) => a.sort - b.sort)
+        addSuccessResult({ id: logId })
+        res.send({ code: 200, data: list, message: "success" });
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
     }
-    const userInfo = data[0];
-    const token =
-        "Bearer " +
-        jwt.sign(userInfo, config.secretKey, { expiresIn: config.expiresIn });
-    res.send({ code: 200, data: { token }, message: "success" });
 });
 
+// 新增菜单
+router.post("/add", async (req, res) => {
+
+    const logId = nanoid()
+    try {
+        await addLog({ id: logId, module: "菜单模块", type: '新增菜单', username: req.auth.username, req })
+
+        const { body: { pid, fullname, path = NULL, sort, icon, component, type, status, keepAlive, permissionCode, isLink, linkUrl } } = req
+
+        const [data] = await sql.query(
+            "insert into react_menu (pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code, is_link, link_url) values (?,?,?,?,?,?,?,?,?,?,?,?)",
+            [pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode, isLink, linkUrl]
+        );
+
+        if (data.affectedRows === 1) {
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: null, message: "success" });
+        } else {
+            addErrorResult({ id: logId, result: "操作失败" })
+            res.send({ code: 500, data: null, message: "fail" });
+        }
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+});
+
+// 菜单详情
+router.get("/detail", async (req, res) => {
+    const logId = nanoid()
+    try {
+        await addLog({ id: logId, module: "菜单模块", type: '获取菜单详情', username: req.auth.username, req })
+
+        const { query: { id } } = req
+
+        const [data] = await sql.query(
+            "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code, is_link, link_url from react_menu where id = ? and is_delete = 0",
+            [id]
+        );
+
+        if (data.length !== 0) {
+            const list = data[0]
+            list.keepAlive = list.keep_alive
+            list.permissionCode = list.permission_code
+            list.isLink = list.is_link
+            list.linkUrl = list.link_url
+            delete list.keep_alive
+            delete list.permission_code
+            delete list.is_link
+            delete list.link_url
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: list, message: "success" });
+        } else {
+            addErrorResult({ id: logId, result: "操作失败" })
+            res.send({ code: 500, data: null, message: "fail" });
+        }
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+});
+
+// 修改菜单
+router.post("/edit", async (req, res) => {
+    const logId = nanoid()
+    try {
+        await addLog({ id: logId, module: "菜单模块", type: '修改菜单', username: req.auth.username, req })
+
+        const { body: { id, pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode, isLink, linkUrl } } = req
+
+        const [data] = await sql.query(
+            "update react_menu set pid = ?, fullname = ?, path = ?, sort = ?, icon = ?, component = ?, type = ?, status = ?, keep_alive = ?, permission_code = ?, is_link = ?, link_url = ? where id = ? and is_delete = 0",
+            [pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode, isLink, linkUrl, id]
+        );
+        if (data.affectedRows === 1) {
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: null, message: "success" });
+        } else {
+            addErrorResult({ id: logId, result: "操作失败" })
+            res.send({ code: 500, data: null, message: "fail" });
+        }
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+});
+
+function findChildrenById(id, data) {
+    const children = data.filter(item => item.pid === id);
+    // 递归查找子节点
+    children.forEach(child => {
+        children.push(...findChildrenById(child.id, data));
+    });
+    return children;
+}
+// 删除菜单
+router.post("/delete", async (req, res) => {
+    const logId = nanoid()
+    try {
+        await addLog({ id: logId, module: "菜单模块", type: '删除菜单', username: req.auth.username, req })
+
+        const { body: { id } } = req
+        const [allMenu] = await sql.query(
+            "select id, pid from react_menu where is_delete = 0"
+        );
+        let ids = [id]
+        ids.push(...findChildrenById(id, allMenu)?.map(v => v.id))
+
+        const [data] = await sql.query(
+            "update react_menu set is_delete = 1 where id in (?)",
+            [ids]
+        );
+
+        // const [data] = await sql.query(
+        //     "update react_menu set is_delete = 1 where id = ? or pid = ?",
+        //     [id, id]
+        // );
+
+        if (data.affectedRows !== 0) {
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: null, message: "success" });
+        } else {
+            addErrorResult({ id: logId, result: "操作失败" })
+            res.send({ code: 500, data: null, message: "fail" });
+        }
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+});
 
 export default router;

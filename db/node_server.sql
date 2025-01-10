@@ -11,63 +11,17 @@
  Target Server Version : 80032 (8.0.32)
  File Encoding         : 65001
 
- Date: 02/01/2025 15:26:33
+ Date: 10/01/2025 10:09:12
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for react_menu
+-- Table structure for react_logs
 -- ----------------------------
-DROP TABLE IF EXISTS `react_menu`;
-CREATE TABLE `react_menu`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of react_menu
--- ----------------------------
-
--- ----------------------------
--- Table structure for react_role
--- ----------------------------
-DROP TABLE IF EXISTS `react_role`;
-CREATE TABLE `react_role`  (
-  `id` int NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of react_role
--- ----------------------------
-
--- ----------------------------
--- Table structure for react_user
--- ----------------------------
-DROP TABLE IF EXISTS `react_user`;
-CREATE TABLE `react_user`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nickname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
-  `is_delete` int NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of react_user
--- ----------------------------
-INSERT INTO `react_user` VALUES (1, '超级管理员', 'admin', '123456', '111@qq.com', NULL, 0);
-
--- ----------------------------
--- Table structure for vue_logs
--- ----------------------------
-DROP TABLE IF EXISTS `vue_logs`;
-CREATE TABLE `vue_logs`  (
+DROP TABLE IF EXISTS `react_logs`;
+CREATE TABLE `react_logs`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `ip` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
@@ -86,14 +40,165 @@ CREATE TABLE `vue_logs`  (
   `browser` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
   `os` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1196 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of react_logs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for react_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `react_menu`;
+CREATE TABLE `react_menu`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `pid` int NOT NULL DEFAULT 0 COMMENT '父级id',
+  `fullname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '名称',
+  `path` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '路由',
+  `sort` int NULL DEFAULT NULL,
+  `icon` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `permission_code` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '权限标识',
+  `component` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '组件路径',
+  `type` char(4) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '类型 - F: 目录；M: 菜单；B: 按钮',
+  `status` int NOT NULL DEFAULT 0,
+  `keep_alive` int NOT NULL DEFAULT 0 COMMENT '缓存页面 - 0: 不缓存；1: 缓存',
+  `is_delete` int NOT NULL DEFAULT 0,
+  `is_link` int NOT NULL DEFAULT 0 COMMENT '是否外链 - 0: 否；1:是',
+  `link_url` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '外链地址',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of react_menu
+-- ----------------------------
+INSERT INTO `react_menu` VALUES (1, 0, '首页', '/home', 1, 'Setting', NULL, NULL, 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (2, 0, '系统设置', '/system', 2, 'Setting', NULL, NULL, 'F', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (3, 2, '用户管理', '/system/user', 1, 'User', NULL, 'system/user', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (4, 2, '角色管理', '/system/role', 2, NULL, NULL, 'system/role', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (5, 2, '菜单管理', '/system/menu', 3, NULL, NULL, 'system/menu', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (6, 3, '添加', NULL, 1, NULL, 'system:user:add', NULL, 'B', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (7, 3, '编辑', NULL, 1, NULL, 'system:user:edit', NULL, 'B', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (8, 4, '添加', NULL, NULL, NULL, 'system:role:add', NULL, 'B', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (9, 4, '编辑', NULL, NULL, NULL, 'system:role:edit', NULL, 'B', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (10, 5, '添加', NULL, NULL, NULL, 'system:menu:add', NULL, 'B', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (11, 5, '编辑', NULL, NULL, NULL, 'system:menu:edit', NULL, 'B', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (12, 0, '系统监控', '/monitor', 3, 'Setting', '', '', 'F', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (13, 12, '操作日志', '/monitor/logs', NULL, '', '', 'monitor/logs', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (14, 0, 'Echarts', '/echarts', 4, 'Setting', NULL, NULL, 'F', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (15, 14, '3D地图', '/echarts/mapChart', NULL, NULL, NULL, 'echarts/mapChart', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (16, 0, '表格', '/table', 5, 'Setting', NULL, '', 'F', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (17, 16, 'table1', '/table/table1', NULL, NULL, NULL, 'table/table1', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (18, 16, 'table2', '/table/table2', NULL, NULL, NULL, 'table/table2', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (19, 16, 'table3', '/table/table3', NULL, NULL, NULL, 'table/table3', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (20, 16, 'tablePro', '/table/tablePro', NULL, NULL, NULL, 'table/tablePro', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (21, 0, 'PDF', '/pdf', 6, 'Setting', NULL, NULL, 'F', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (22, 21, 'viewPDF', '/pdf/viewPdf', NULL, NULL, NULL, 'pdf/viewPdf', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (23, 21, 'downloadPdf', '/pdf/downloadPdf', NULL, NULL, NULL, 'pdf/downloadPdf', 'M', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (24, 0, '外链', NULL, 10, 'Setting', NULL, NULL, 'F', 0, 0, 0, 0, NULL);
+INSERT INTO `react_menu` VALUES (25, 24, '外链地址', NULL, 20, NULL, NULL, NULL, 'M', 0, 0, 0, 1, 'https://www.baidu.com');
+INSERT INTO `react_menu` VALUES (26, 24, '外链地址2', NULL, 21, NULL, NULL, NULL, 'M', 0, 0, 0, 1, 'https://www.baidu.com');
+
+-- ----------------------------
+-- Table structure for react_role
+-- ----------------------------
+DROP TABLE IF EXISTS `react_role`;
+CREATE TABLE `react_role`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fullname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `permissions` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `status` int NOT NULL DEFAULT 0 COMMENT '状态 - 0: 启用；1: 停用',
+  `is_delete` int NOT NULL DEFAULT 0 COMMENT '删除 - 0:未删除；1: 删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of react_role
+-- ----------------------------
+INSERT INTO `react_role` VALUES (1, '角色1', '角色1', '5,7', 0, 0);
+INSERT INTO `react_role` VALUES (2, '角色2', '213', '1,2,3,4,5,6,7,8,9,10', 0, 0);
+INSERT INTO `react_role` VALUES (3, '角色3', '角色3', '9', 0, 0);
+INSERT INTO `react_role` VALUES (4, '角色4', '角色4', '2,5,6', 0, 0);
+INSERT INTO `react_role` VALUES (5, '角色5', '角色5', '3,7,8', 0, 0);
+INSERT INTO `react_role` VALUES (6, '角色6', '角色6', '4,9,10', 0, 0);
+INSERT INTO `react_role` VALUES (7, '角色7', '角色7', '2,5,6,3,7,8', 0, 0);
+INSERT INTO `react_role` VALUES (8, '角色8', '角色8', '2,5,6,4,9,10', 0, 0);
+INSERT INTO `react_role` VALUES (9, '角色9', '角色9', '3,7,8,4,9,10', 0, 0);
+INSERT INTO `react_role` VALUES (10, '角色10', '角色10', '1,2,3,4,5,6,7,8,9,10', 0, 0);
+INSERT INTO `react_role` VALUES (11, '角色11', '角色11', NULL, 0, 0);
+INSERT INTO `react_role` VALUES (12, '角色12', '角色12', NULL, 0, 0);
+INSERT INTO `react_role` VALUES (13, '角色13', '角色13', NULL, 0, 0);
+INSERT INTO `react_role` VALUES (14, '角色14', '角色14', '', 0, 0);
+INSERT INTO `react_role` VALUES (15, '角色15', '角色15', '5', 1, 0);
+INSERT INTO `react_role` VALUES (16, '角色16', '角色16', NULL, 0, 1);
+
+-- ----------------------------
+-- Table structure for react_user
+-- ----------------------------
+DROP TABLE IF EXISTS `react_user`;
+CREATE TABLE `react_user`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `roles` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `status` int NOT NULL DEFAULT 0 COMMENT '状态 - 0: 启用；1: 停用',
+  `is_admin` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '0' COMMENT '超级管理员 - 0: 否；1: 是',
+  `is_delete` int NOT NULL DEFAULT 0 COMMENT '删除 - 0:未删除；1: 删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of react_user
+-- ----------------------------
+INSERT INTO `react_user` VALUES (1, '超级管理员', 'admin', '123456', '111@qq.com', '', '', 0, '1', 0);
+INSERT INTO `react_user` VALUES (2, 'test1', 'test1', '123456', 'test1@qq.com', '', '1,3', 0, '0', 0);
+INSERT INTO `react_user` VALUES (3, 'test2', 'test2', '123456', '123456@qq.com', '', '11', 0, '0', 0);
+INSERT INTO `react_user` VALUES (4, 'test3', 'test3', '123456', '', '', '', 0, '0', 0);
+INSERT INTO `react_user` VALUES (5, 'test4', 'test4', '123456', '', '', '', 0, '0', 0);
+INSERT INTO `react_user` VALUES (6, 'test5', 'test5', '123456', '122223@qq.com', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (7, 'test6', 'test6', '123456', '', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (8, 'test7', 'test7', '123456', '', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (9, 'test8', 'test8', '123456', '', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (10, 'test9', 'test9', '123456', '', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (11, 'test10', 'test10', '123456', '', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (12, 'test11', 'test11', '123456', '', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (13, 'test12', 'test12', '123456', 'asd@qq.com', '', NULL, 1, '0', 0);
+INSERT INTO `react_user` VALUES (14, 'uuuuuu', 'test13', '123456', 'uuu@qq.com', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (15, 'ooooo', 'test14', '123456', 'ooqq@qq.com', '', NULL, 0, '0', 0);
+INSERT INTO `react_user` VALUES (16, 'test15', 'test15', '123456', NULL, '', NULL, 0, '0', 1);
+INSERT INTO `react_user` VALUES (17, 'test15', 'test15', '123456', '', '', NULL, 1, '0', 0);
+
+-- ----------------------------
+-- Table structure for vue_logs
+-- ----------------------------
+DROP TABLE IF EXISTS `vue_logs`;
+CREATE TABLE `vue_logs`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `ip` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `module` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '操作类型',
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '操作人',
+  `method` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `path` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `query` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `params` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `body` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `result_type` int NULL DEFAULT 0 COMMENT '1: 操作成功，0: 操作失败',
+  `result` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '操作结果',
+  `create_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `update_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `browser` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `os` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of vue_logs
 -- ----------------------------
-INSERT INTO `vue_logs` VALUES (1193, '3w6CYEHmL8drtHhUXWPd1', '127.0.0.1', '用户模块', '登录', 'admin', 'POST', '/vue/user/login', '{}', '{}', '{\"username\":\"admin\",\"password\":\"123456\"}', 1, '', '2025-01-02 15:26:15:834', '2025-01-02 15:26:15:847', 'Chrome 131.0.0.0', 'Windows 10.0');
-INSERT INTO `vue_logs` VALUES (1194, 'MPPyIKZXuE3hIgM6vDuqx', '127.0.0.1', '用户模块', '登录用户信息', 'admin', 'GET', '/vue/user/userInfo', '{}', '{}', '{}', 1, '', '2025-01-02 15:26:15:855', '2025-01-02 15:26:15:858', 'Chrome 131.0.0.0', 'Windows 10.0');
-INSERT INTO `vue_logs` VALUES (1195, '6w8EdLwE632nfRHWAyrO2', '127.0.0.1', '用户模块', '查询登录用户权限', 'admin', 'GET', '/vue/user/userPermission', '{}', '{}', '{}', 1, '', '2025-01-02 15:26:15:869', '2025-01-02 15:26:15:872', 'Chrome 131.0.0.0', 'Windows 10.0');
 
 -- ----------------------------
 -- Table structure for vue_menu
@@ -128,7 +233,7 @@ INSERT INTO `vue_menu` VALUES (7, 3, '添加', '', NULL, '', 'system:role:add', 
 INSERT INTO `vue_menu` VALUES (8, 3, '编辑', '', NULL, '', 'system:role:edit', '', 'B', 0, 0, 0);
 INSERT INTO `vue_menu` VALUES (9, 4, '添加', '', NULL, '', 'system:menu:add', '', 'B', 0, 0, 0);
 INSERT INTO `vue_menu` VALUES (10, 4, '编辑', '', NULL, '', 'system:menu:edit', '', 'B', 0, 0, 0);
-INSERT INTO `vue_menu` VALUES (12, 0, '系统监控', '/monitor', NULL, 'Setting', '', '', 'F', 0, 0, 0);
+INSERT INTO `vue_menu` VALUES (12, 0, '系统监控', '/monitor', 2, 'Setting', '', '', 'F', 0, 0, 0);
 INSERT INTO `vue_menu` VALUES (13, 12, '操作日志', '/monitor/logs', NULL, '', '', 'monitor/logs', 'M', 0, 0, 0);
 
 -- ----------------------------
@@ -162,7 +267,7 @@ INSERT INTO `vue_role` VALUES (11, '角色11', '角色11', NULL, 0, 0);
 INSERT INTO `vue_role` VALUES (12, '角色12', '角色12', NULL, 0, 0);
 INSERT INTO `vue_role` VALUES (13, '角色13', '角色13', NULL, 0, 0);
 INSERT INTO `vue_role` VALUES (14, '角色14', '角色14', NULL, 0, 0);
-INSERT INTO `vue_role` VALUES (15, '角色15', '角色15', NULL, 0, 0);
+INSERT INTO `vue_role` VALUES (15, '角色15', '角色15', '1,2,5', 0, 0);
 
 -- ----------------------------
 -- Table structure for vue_user
@@ -186,10 +291,10 @@ CREATE TABLE `vue_user`  (
 -- Records of vue_user
 -- ----------------------------
 INSERT INTO `vue_user` VALUES (1, '超级管理员', 'admin', '123456', '111@qq.com', NULL, '', 0, '1', 0);
-INSERT INTO `vue_user` VALUES (2, 'test1', 'test1', '123456', 'test1@qq.com', 'test1', '1,3', 0, '0', 0);
+INSERT INTO `vue_user` VALUES (2, 'test1', 'test1', '123456', 'test1@qq.com', 'test1', '1', 0, '0', 1);
 INSERT INTO `vue_user` VALUES (3, 'test2', 'test2', '123456', '123456@qq.com', '123456', '11', 0, '0', 0);
-INSERT INTO `vue_user` VALUES (4, 'test3', 'test3', '123456', '1', '2', '', 0, '0', 0);
-INSERT INTO `vue_user` VALUES (5, 'test4', 'test4', '123456', '1', '3', '', 0, '0', 0);
+INSERT INTO `vue_user` VALUES (4, 'test3', 'test3', '123456', '1', '2', NULL, 0, '0', 0);
+INSERT INTO `vue_user` VALUES (5, 'test4', 'test4', '123456', '1', '3', NULL, 0, '0', 0);
 INSERT INTO `vue_user` VALUES (6, 'test5', 'test5', '123456', '122223@qq.com', 'test5', NULL, 0, '0', 0);
 INSERT INTO `vue_user` VALUES (7, 'test6', 'test6', '123456', '', '', NULL, 0, '0', 0);
 INSERT INTO `vue_user` VALUES (8, 'test7', 'test7', '123456', '', '', NULL, 0, '0', 0);

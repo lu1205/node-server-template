@@ -41,3 +41,17 @@ export function findDescendantsById(items, targetId) {
 
   return descendants;
 }
+
+// 通过 id 查询所有上级
+export function findParentMenusById(id, menuList) {
+  const parentMenus = [];
+  const findParent = (currentId) => {
+    const parentMenu = menuList.find(menu => menu.id === currentId);
+    if (parentMenu && parentMenu.pid !== null) {
+      parentMenus.unshift(parentMenu);
+      findParent(parentMenu.pid);
+    }
+  };
+  findParent(id);
+  return parentMenus;
+}
