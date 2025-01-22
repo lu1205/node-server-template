@@ -10,7 +10,7 @@ router.get("/list", async (req, res) => {
     try {
         await addLog({ id: logId, module: "菜单模块", type: '获取菜单列表', username: req.auth.username, req })
 
-        const sqlStr = "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code from react_menu where is_delete = 0"
+        const sqlStr = "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code from vue_menu where is_delete = 0"
 
         const [data] = await sql.query(sqlStr);
     
@@ -37,7 +37,7 @@ router.post("/add", async (req, res) => {
         const { body: { pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode } } = req
 
         const [data] = await sql.query(
-            "insert into react_menu (pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code) values (?,?,?,?,?,?,?,?,?,?)",
+            "insert into vue_menu (pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code) values (?,?,?,?,?,?,?,?,?,?)",
             [pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode]
         );
         if (data.affectedRows === 1) {
@@ -61,7 +61,7 @@ router.get("/detail", async (req, res) => {
         const { query: { id } } = req
 
         const [data] = await sql.query(
-            "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code from react_menu where id = ? and is_delete = 0",
+            "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive, permission_code from vue_menu where id = ? and is_delete = 0",
             [id]
         );
     
@@ -91,7 +91,7 @@ router.post("/edit", async (req, res) => {
         const { body: { id, pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode } } = req
 
         const [data] = await sql.query(
-            "update react_menu set pid = ?, fullname = ?, path = ?, sort = ?, icon = ?, component = ?, type = ?, status = ?, keep_alive = ?, permission_code = ? where id = ? and is_delete = 0",
+            "update vue_menu set pid = ?, fullname = ?, path = ?, sort = ?, icon = ?, component = ?, type = ?, status = ?, keep_alive = ?, permission_code = ? where id = ? and is_delete = 0",
             [pid, fullname, path, sort, icon, component, type, status, keepAlive, permissionCode, id]
         );
         if (data.affectedRows === 1) {
@@ -115,7 +115,7 @@ router.post("/delete", async (req, res) => {
         const { body: { id } } = req
 
         const [data] = await sql.query(
-            "update react_menu set is_delete = 1 where id = ? or pid = ?",
+            "update vue_menu set is_delete = 1 where id = ? or pid = ?",
             [id, id]
         );
     
