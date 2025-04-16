@@ -102,7 +102,7 @@ router.get("/userPermission", async (req, res) => {
 
         // 超级管理员
         if (Number(jwtInfo['is_admin']) === 1) {
-            sqlStr = "select id, pid, fullname, path, icon, component, type, status, keep_alive from vue_menu where is_delete = 0"
+            sqlStr = "select id, pid, fullname, path, sort, icon, component, type, status, keep_alive from vue_menu where is_delete = 0"
         } else {
             // 普通用户
             // 获取 用户ID 和 用户角色ID
@@ -134,7 +134,7 @@ router.get("/userPermission", async (req, res) => {
                 return res.send({ code: 200, data: [], message: "success" });
             }
             // 3. 通过菜单ID, 查询用户菜单
-            sqlStr = `select id, pid, fullname, path, icon, component, type, status, keep_alive from vue_menu where is_delete = 0 and id in (${permissions})`
+            sqlStr = `select id, pid, fullname, path, sort, icon, component, type, status, keep_alive from vue_menu where is_delete = 0 and id in (${permissions})`
         }
 
         const [data] = await sql.query(sqlStr);
@@ -143,7 +143,7 @@ router.get("/userPermission", async (req, res) => {
             v.keepAlive = v.keep_alive
             delete v.keep_alive
             return v
-        })
+        }).sort((a, b) => a.sort - b.sort)
         addSuccessResult({ id: logId })
         res.send({ code: 200, data: list, message: "success" });
     } catch (err) {
