@@ -6,7 +6,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "node_modules/svg-captcha/fonts", to: "fonts" },
-        { from: "src/vue/components", to: "components" },
+        { from: "public", to: "public" },
       ],
     }),
     // new BundleAnalyzerPlugin()
