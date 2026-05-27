@@ -8,6 +8,12 @@ import config from "../../../config.js";
 import { nanoid } from "nanoid";
 import { addLog, addSuccessResult, addErrorResult } from "../../../utils/logUtil.js";
 import { loginUserList } from "../loginUsers.js";
+import path from "node:path";
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -475,6 +481,29 @@ router.post("/editRole", async (req, res) => {
         }
     } catch (err) {
         addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+});
+
+// 获取用户组件（JSON格式）
+router.get("/getUserComponent", async (req, res) => {
+    const logId = nanoid()
+    try {
+        const jwtInfo = decodeJWT(req.headers.authorization);
+        await addLog({ id: logId, module: "用户模块", type: '获取用户组件JSON', username: jwtInfo.username, req })
+
+        const pathDir = path.join(path.resolve(__dirname, ".."), "/components/user.vue");
+        
+        fs.readFile(pathDir, 'utf8', (err, data) => {
+            if (err) {
+                addErrorResult({ id: logId, result: '文件不存在或读取失败' })
+                return res.send({ code: 500, data: null, message: "文件不存在或读取失败" });
+            }
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: data, message: "success" });
+        });
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+        res.send({ code: 500, data: null, message: "fail" });
     }
 });
 

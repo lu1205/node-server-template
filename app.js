@@ -2,6 +2,11 @@ import express from "express";
 import useragent from 'express-useragent'
 const app = express();
 
+// 远程vue组件
+import cors from 'cors'
+app.use(cors());
+app.use(express.static('src/vue/components'));
+
 // 配置 useragent 中间件
 app.use(useragent.express())
 
