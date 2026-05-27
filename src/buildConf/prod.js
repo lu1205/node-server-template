@@ -5,7 +5,8 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: "node_modules/svg-captcha/fonts", to: "fonts" }, // 复制 fonts 目录
+        { from: "node_modules/svg-captcha/fonts", to: "fonts" },
+        { from: "src/vue/components", to: "components" },
       ],
     }),
     // new BundleAnalyzerPlugin()

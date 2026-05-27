@@ -12,5 +12,9 @@ module.exports = {
     filename: "[name].js", // 指定输出的文件名
     clean: true, // 每次构建之前清空输出目录
   },
+  node: {
+    __dirname: true,
+    __filename: true,
+  },
   ...prodConfig
 };

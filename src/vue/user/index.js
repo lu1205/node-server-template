@@ -490,8 +490,15 @@ router.get("/getUserComponent", async (req, res) => {
     try {
         const jwtInfo = decodeJWT(req.headers.authorization);
         await addLog({ id: logId, module: "用户模块", type: '获取用户组件JSON', username: jwtInfo.username, req })
-
-        const pathDir = path.join(path.resolve(__dirname, ".."), "/components/user.vue");
+        let pathDir;
+        
+        const isProduction = __dirname.includes('dist') || process.env.NODE_ENV === 'production';
+        
+        if (isProduction) {
+            pathDir = path.join(process.cwd(), "components", "user.vue");
+        } else {
+            pathDir = path.join(__dirname, "..", "components", "user.vue");
+        }
         
         fs.readFile(pathDir, 'utf8', (err, data) => {
             if (err) {
