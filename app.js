@@ -7,7 +7,7 @@ const app = express();
 // 远程vue组件
 import cors from 'cors'
 app.use(cors());
-app.use(express.static(path.join(process.cwd(), 'public')));
+app.use('/vue',express.static(path.join(process.cwd(), 'public')));
 
 // 配置 useragent 中间件
 app.use(useragent.express())
