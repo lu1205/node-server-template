@@ -6,6 +6,7 @@ import userRouter from './user/index.js'
 import roleRouter from './role/index.js'
 import menuRouter from './menu/index.js'
 import logsRouter from './logs/index.js'
+import otherRouter from './other/index.js'
 
 // 用户鉴权中间件（校验用户是否登录）
 import { loginUserList as VueLoginUserList } from './loginUsers.js'
@@ -23,5 +24,6 @@ vueRouter.use('/user', AuthMiddleWare, userRouter)
 vueRouter.use('/role', AuthMiddleWare, roleRouter)
 vueRouter.use('/menu', AuthMiddleWare, menuRouter)
 vueRouter.use('/logs', AuthMiddleWare, logsRouter)
+vueRouter.use('/other', AuthMiddleWare, otherRouter)
 
 export default vueRouter
