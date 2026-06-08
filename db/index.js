@@ -1,10 +1,16 @@
 import mysql2 from "mysql2/promise";
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import dotenv from 'dotenv';
+const argv = yargs(hideBin(process.argv)).parse()
+dotenv.config({ path: argv.envFile || './.env' });
 
 const connectionConfig = {
-  user: "root",
-  password: "Bingtanghulu",
-  port: 3306,
-  database: "node_server",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  database: process.env.DB_DATABASE,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
