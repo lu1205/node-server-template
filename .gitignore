@@ -5,3 +5,5 @@ dist
 .eslintrc.js
 .eslintignore
 .eslintcach
+.env
+.env.*
