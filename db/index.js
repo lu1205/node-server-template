@@ -1,25 +1,23 @@
 import mysql2 from "mysql2/promise";
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import dotenv from 'dotenv';
-const argv = yargs(hideBin(process.argv)).parse()
-dotenv.config({ path: argv.envFile || './.env' });
 
 const connectionConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
+  host: "localhost",
+  user: "root",
+  password: "Bingtanghulu",
+  port: 3306,
+  database: "node_server",
+  // 设置是否等待连接
   waitForConnections: true,
+  // 设置最大连接数
   connectionLimit: 10,
+  // 设置最大队列连接数
   queueLimit: 0,
   // 设置连接超时时间，单位为毫秒
   connectTimeout: 30000, // 30秒
-  // 设置查询超时时间，单位为毫秒
-  acquireTimeout: 30000, // 30秒
   // 设置空闲连接超时时间，单位为毫秒
-  idleTimeout: 60000 // 60秒
+  idleTimeout: 60000, // 60秒
+  // 设置最大空闲连接数
+  maxIdle: 10
 }
 
 const sql = await mysql2.createPool(connectionConfig);
