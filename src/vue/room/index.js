@@ -262,5 +262,61 @@ router.post("/updateSeatMap", async (req, res) => {
     }
 })
 
+// 通过房间id和日期获取已选座位信息
+router.get("/getSelectedSeats", async (req, res) => {
+    const logId = nanoid()
+    try {
+        const jwtInfo = decodeJWT(req.headers.authorization);
+        await addLog({ id: logId, module: "房间模块", type: '获取已选座位信息', username: jwtInfo.username, req })
+        const { roomId, date } = req.query
+
+        let [data] = await sql.query(
+            "select id, room_id as roomId, seat_name as seatName, seat_date as seatDate from vue_choose_seat where room_id = ? and seat_date = ? and is_delete = 0",
+            [roomId, date]
+        );
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: data, message: "success" });
+       
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+})
+
+// 保存已选座位信息
+router.post("/saveSelectedSeats", async (req, res) => {
+    const logId = nanoid()
+    try {
+        const jwtInfo = decodeJWT(req.headers.authorization);
+        await addLog({ id: logId, module: "房间模块", type: '保存已选座位信息', username: jwtInfo.username, req })
+        const { body: { roomId, date, seats } } = req
+
+        const connection = await sql.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            for (let seat of seats) {
+                await connection.query(
+                    "insert into vue_choose_seat (room_id, seat_name, seat_date) values (?, ?, ?)",
+                    [roomId, seat, date]
+                );
+            }
+            
+            await connection.commit();
+            addSuccessResult({ id: logId })
+            res.send({ code: 200, data: null, message: "success" });
+        } catch (err) {
+            await connection.rollback();
+            addErrorResult({ id: logId, result: JSON.stringify(err) })
+            res.send({ code: 500, data: null, message: "操作失败" });
+            throw err;
+        } finally {
+            connection.release();
+        }
+
+    } catch (err) {
+        addErrorResult({ id: logId, result: JSON.stringify(err) })
+    }
+})
 
 export default router;
